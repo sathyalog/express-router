@@ -1,9 +1,9 @@
 var express = require('express');
-
 var app = express();
+var bodyParser = require('body-parser');
 var port = process.env.PORT||8051;
 var sub = express.Router({mergeParams: true});
-
+app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/sample',function(req,res){
 	res.send('this is just a sample');
 });
@@ -12,9 +12,16 @@ app.set('view engine', 'ejs');
 app.listen(port);
 console.log('Application running on port:'+port);
 
+app.post('/login',function(req,res){
+  var user_name=req.body.user;
+  var password=req.body.password;
+  console.log("User name = "+user_name+", password is "+password);
+  res.end("yes");
+});
+
 var router = express.Router();
 var defaultRoute = function (req, res) {
-    res.render('home');
+    res.render('index');
 };
 var params = function(req,res){
 	res.render('home',{name:req.params.username});
@@ -24,7 +31,7 @@ var subRouter = function(req,res){
     res.render('subroute',{data:{name:req.params.username,city:req.params.city}});
 }
 router.get('/',function(req,res){
-	res.send('this is home page');
+	res.render('index');
 });
 
 router.get('/about',function(req,res){
